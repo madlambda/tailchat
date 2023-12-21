@@ -25,6 +25,8 @@ experimental servers with no security, shared software where any one machine cou
 the network by typing in an innocuous command.
 Even when I did bring down the network the impact never left the building.
 I knew who I had to apologise to.
+
+With our LAN easy things were easy, and some hard things were possible.
 ```
 
 Technology like wireguard/tailscale helps us go back to those simpler times by building "LANs" on top
