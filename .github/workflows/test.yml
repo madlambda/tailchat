@@ -2,14 +2,30 @@ name: tests
 on: [push]
 jobs:
 
-  build:
+  lint:
+    name: lint
+    runs-on: ubuntu-22.04
+    steps:
+
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+        components: rustfmt, clippy
+
+    - name: checkout code
+      uses: actions/checkout@v1
+
+    - name: lint
+      run: make lint
+
+  tests:
     name: tests
-
     runs-on: ${{ matrix.os }}
-
     strategy:
       matrix:
-        os: [ubuntu-22.04]
+        os: [macos-13, ubuntu-22.04]
         toolchain: ["stable", "nightly"]
 
     steps:
@@ -19,13 +35,9 @@ jobs:
       with:
         toolchain: ${{ matrix.toolchain }}
         override: true
-        components: rustfmt, clippy
 
     - name: checkout code
       uses: actions/checkout@v1
-
-    - name: lint
-      run: make lint
 
     - name: test
       run: make test
