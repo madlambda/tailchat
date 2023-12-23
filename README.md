@@ -14,7 +14,7 @@ The major architectural constraints are:
  3. The network is secure (protocols will be plain text/binary, no TLS)
  4. Peer to peer communication is always possible
 
-The constraints and the overall design are inspired on the ideas of [Remembering the LAN](https://crawshaw.io/blog/remembering-the-lan),
+The constraints and the overall design are inspired on the ideas by [Remembering the LAN](https://crawshaw.io/blog/remembering-the-lan),
 a time where building networked software was easy and simple (we are that old):
 
 ```
