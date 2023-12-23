@@ -11,6 +11,7 @@ use crossterm::terminal::{
 use crossterm::ExecutableCommand;
 use ratatui::prelude::{Constraint, CrosstermBackend, Direction, Frame, Layout, Terminal};
 use ratatui::widgets::{Block, Borders, Paragraph};
+use tui_input::backend::crossterm::EventHandler;
 
 pub fn run() -> io::Result<()> {
     set_up_terminal()?;
@@ -56,26 +57,22 @@ fn handle_events(app: &mut app::App) -> io::Result<()> {
             {
                 app.quit();
             }
-            _ => {}
+            Event::Key(key)
+                if key.kind == event::KeyEventKind::Press && key.code == KeyCode::Enter =>
+            {
+                app.add_line(app.input.value().into());
+                app.input.reset();
+            }
+            // TODO use arrow keys, PgUp, PgDown to scroll
+            _ => {
+                app.input.handle_event(&ev);
+            }
         }
     }
     Ok(())
 }
 
 fn ui(app: &app::App, frame: &mut Frame) {
-    let text = Paragraph::new(app.text.clone());
-    let chat_widget = text.block(
-        Block::default()
-            .title("Chat with bob")
-            .borders(Borders::ALL),
-    );
-
-    // TODO use https://github.com/sayanarijit/tui-input
-    let input = Paragraph::new("");
-    let input_widget = input.block(Block::default().title("Input").borders(Borders::ALL));
-
-    let help_widget = Paragraph::new("Esc to quit");
-
     let layout = Layout::new(
         Direction::Vertical,
         [
@@ -85,7 +82,27 @@ fn ui(app: &app::App, frame: &mut Frame) {
         ],
     )
     .split(frame.size());
+
+    let text_height = layout[0].height - 2;
+    let chat_widget = app.paragraph(text_height).block(
+        Block::default()
+            .title("Chat with bob")
+            .borders(Borders::ALL),
+    );
     frame.render_widget(chat_widget, layout[0]);
+
+    let width = layout[1].width.max(3) - 3; // reserve 2 chars for borders and 1 for the cursor
+    let scroll = app.input.visual_scroll(width as usize);
+    let input = Paragraph::new(app.input.value());
+    let input_widget = input
+        .scroll((0, scroll as u16))
+        .block(Block::default().title("Input").borders(Borders::ALL));
     frame.render_widget(input_widget, layout[1]);
+    frame.set_cursor(
+        layout[1].x + ((app.input.visual_cursor()).max(scroll) - scroll) as u16 + 1,
+        layout[1].y + 1,
+    );
+
+    let help_widget = Paragraph::new("Enter: send, Esc: quit");
     frame.render_widget(help_widget, layout[2]);
 }
