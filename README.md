@@ -9,10 +9,10 @@ Not a novel idea... We know... but we also want to play around with some Rust :-
 
 The major architectural constraints are:
 
-1 - Communication is always peer to peer
-2 - Any storage (if any) is stored only on the peers participating on the conversation
-3 - The network is secure (protocols will be plain text/binary, no TLS)
-4 - Peer to peer communication is always possible
+ 1. Communication is always peer to peer
+ 2. Any storage (if any) is stored only on the peers participating on the conversation
+ 3. The network is secure (protocols will be plain text/binary, no TLS)
+ 4. Peer to peer communication is always possible
 
 The constraints and the overall design are inspired on the ideas of [Remembering the LAN](https://crawshaw.io/blog/remembering-the-lan),
 a time where building networked software was easy and simple (we are that old):
