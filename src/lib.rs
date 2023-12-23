@@ -1,3 +1,5 @@
+pub mod app;
+
 use std::io::stdout;
 use std::{io, panic};
 
@@ -21,10 +23,11 @@ pub fn run() -> io::Result<()> {
         panic_hook(panic);
     }));
 
-    let mut should_quit = false;
-    while !should_quit {
-        terminal.draw(ui)?;
-        should_quit = handle_events()?;
+    let mut app = app::App::new();
+
+    while !app.should_quit {
+        terminal.draw(|frame| ui(&app, frame))?;
+        handle_events(&mut app)?;
     }
 
     reset_terminal()?;
@@ -44,24 +47,23 @@ fn reset_terminal() -> io::Result<()> {
     Ok(())
 }
 
-fn handle_events() -> io::Result<bool> {
+fn handle_events(app: &mut app::App) -> io::Result<()> {
     if event::poll(std::time::Duration::from_millis(50))? {
         let ev = event::read()?;
         match ev {
             Event::Key(key)
                 if key.kind == event::KeyEventKind::Press && key.code == KeyCode::Esc =>
             {
-                return Ok(true);
+                app.quit();
             }
             _ => {}
         }
     }
-    Ok(false)
+    Ok(())
 }
 
-fn ui(frame: &mut Frame) {
-    let sample_chat = "alice> Hello!\nbob> Hi!\n";
-    let text = Paragraph::new(sample_chat);
+fn ui(app: &app::App, frame: &mut Frame) {
+    let text = Paragraph::new(app.text.clone());
     let chat_widget = text.block(
         Block::default()
             .title("Chat with bob")
