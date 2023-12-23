@@ -1,3 +1,5 @@
-fn main() {
-    tailchat::run();
+use std::io;
+
+fn main() -> io::Result<()> {
+    tailchat::run()
 }
