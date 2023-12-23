@@ -31,7 +31,7 @@ With our LAN easy things were easy, and some hard things were possible.
 
 Technology like wireguard/tailscale helps us go back to those simpler times by building "LANs" on top
 of the Internet. We want to explore building things on top of this model, where application code
-can just trust other peers and doesn't need to deal with the hassle of making peer to peer communication
+can just trust other peers and doesn't need to deal with the hassle of making peer-to-peer communication
 work (NAT traversal is solved by the network layer, or NAT is not an issue for you like in a LAN).
 
 In general the project should work fine in a mesh VPN like Tailscale, but would also work fine in an actual LAN.
